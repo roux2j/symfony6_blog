@@ -1,0 +1,82 @@
+{% extends "theme/theme_admin.html.twig" %}
+
+{% block title %}Admin - Modifier cet article{% endblock %}
+
+{% block jquery %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock %}
+
+{% block select2 %}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#post_tags').select2();
+            // id mis automatiquement par symfony au niveau du select
+        });
+    </script>
+{% endblock %}
+
+{% block tinymce %}
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+  tinymce.init({
+    selector: 'textarea#post_content'
+  });
+</script>
+{% endblock %}
+
+{% block adminContent %}
+    <h1 class="text-center my-3 display-5">Modifier cet article</h1>
+
+    <div class="container">
+        {{form_start(form)}}
+        <div class="mb-3">
+            <label for="category_name">Titre</label>
+            <div class="text-danger">{{form_errors(form.title)}}</div>
+            {{form_widget(form.title, {'attr': {'class': 'form-control', 'autofocus' :  true }}) }}
+        </div>
+
+        <div class="mb-3">
+            <label for="category_name">Catégorie</label>
+            <div class="text-danger">{{form_errors(form.category)}}</div>
+            {{form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        {% if tags|length != 0 %}
+        <div class="mb-3">
+            <label for="category_name">Tags</label>
+            <div class="text-danger">{{form_errors(form.tags)}}</div>
+            {{form_widget(form.tags, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        {% endif %}
+
+        <div class="mb-3">
+            <label for="category_name">Image</label>
+            <div class="text-danger">{{form_errors(form.imageFile)}}</div>
+            <div class="row text-center">
+                <div class="col-md-6">
+                    {% if post.image %}
+                        <img src="{{ vich_uploader_asset(post, 'imageFile') | imagine_filter('admin_post_image_thumbnail')}}" alt="{{post.title}}">
+                    {% else %}
+                        <img src="{{asset('image/static/default.jpg')}}" alt="image par défaut" height="100" width="100" >
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    {{form_widget(form.imageFile, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="category_name">Contenu</label>
+            <div class="text-danger">{{form_errors(form.content)}}</div>
+            {{form_widget(form.content, {'attr': {'class': 'form-control', 'rows': 10}}) }}
+        </div>
+
+        <div class="mb-3">
+            <input type="submit" class="btn btn-primary" value="Modifier et sauvegarder" formnovalidate>
+        </div>
+        {{form_end(form)}}
+    </div>
+{% endblock %}

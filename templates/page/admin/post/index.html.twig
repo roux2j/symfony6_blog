@@ -1,0 +1,102 @@
+{% extends "theme/theme_admin.html.twig" %}
+
+{% block title %}Admin / Liste des articles{% endblock %}
+
+{% block font_awesome %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block datatables %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/jq-3.6.0/dt-1.12.1/datatables.min.css"/>
+ 
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/jq-3.6.0/dt-1.12.1/datatables.min.js"></script>
+<script>
+    $(document).ready(function() {
+    $('#myTable').DataTable( {
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json'
+        }
+    } );
+} );
+</script>
+{% endblock %}
+
+{% block adminContent %}
+    <h1 class="text-center my-3 display-5">Liste des articles</h1>
+
+    {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+    {% endfor %}
+
+    <div class="d-flex justify-content-end align-items-center my-3">
+        <a href="{{path('admin.post.create')}}" class="btn btn-primary">Nouvel article</a>
+    </div>
+
+    <div class="table-responsive">
+        <table id="myTable" class="table table-bordered table-striped table-hover text-center">
+            <thead class="bg-dark text-white">
+                <tr>
+                    <th>Id</th>
+                    <th>Image</th>
+                    <th>Titre</th>
+                    <th>Catégorie</th>
+                    <th>Tags</th>
+                    <th>Publié ?</th>
+                    <th>Contenu</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in posts %}
+                    <tr>
+                        <td>{{post.id}}</td>
+                        {# <td><img src="{{ vich_uploader_asset(post, 'imageFile') }}" height="110" width="120" alt="{{post.title}}"></td> #}
+                        <td>
+                            {% if post.image %}
+                            <img src="{{ vich_uploader_asset(post, 'imageFile') | imagine_filter('admin_post_image_thumbnail')}}" alt="{{post.title}}">
+                            {% else %}
+                            <img src="{{asset('image/static/default.jpg')}}" alt="image par défaut" height="100" width="100" >
+                            {% endif %}
+                        </td>
+                        <td>{{ post.title }}</td>
+                        <td>{{ post.category.name}}</td>
+                        <td>
+                            {% if post.tags|length == 0 %}
+                                ---
+                            {% else %}
+                                {% for tag in post.tags %}
+                                    {{ tag.name }},
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex flex-column justify-content-center align-items-center">
+                                {{ post.isPublished ? 'Publié le ' ~ post.publishedAt|date("d/m/Y") : 'Pas encore' }}
+                                <form action="{{path('admin.post.published', {'id' : post.id})}}" method="post">
+                                    <div class="form-check form-switch">
+                                        <input onclick="return confirm('Confirmer cette action ?');" onchange="this.form.submit()" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheck_{{post.id}}"{{post.isPublished ? 'checked' : ''}}>
+                                        <label class="form-check-label" for="flexSwitchCheck_{{post.id}}"></label>
+                                    </div>
+                                </form>
+                            </div>
+                        </td>
+
+                        <td><a href="{{path('admin.post.show', {'id':post.id})}}"><i class="fa-solid fa-eye"></i></a></td>
+                        <td>
+                            <a href="{{ path('admin.post.edit', {'id':post.id}) }}" class="m-2 text-secondary"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <form action="{{ path('admin.post.delete', {'id': post.id}) }}" method="post" class="d-inline p-1">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_post_' ~   post.id) }}" />
+                                <button class="border-0" onclick="return confirm('Attention !!! Confirmez vous la suppression de cet article ?')" type="submit"><i class="fa-solid fa-trash-can text-danger"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+

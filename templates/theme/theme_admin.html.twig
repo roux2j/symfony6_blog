@@ -1,0 +1,26 @@
+{% extends "theme/theme_back.html.twig" %}
+
+{% block main %}
+<div class="row">
+
+
+    {# sidabar #}
+    <div class="col-md-2 bg-dark">
+        <div class="list-group">
+            <a href="{{path('admin.home.index')}}" class="list-group-item list-group-item-action text-white bg-dark ">Accueil</a>
+            <a href="{{path('admin.category.index')}}" class="list-group-item list-group-item-action text-white bg-dark">Catégories</a>
+            <a href="{{path('admin.post.index')}}" class="list-group-item list-group-item-action text-white bg-dark ">Articles</a>
+            <a href="{{path('admin.tag.index')}}" class="list-group-item list-group-item-action text-white bg-dark ">Tag</a>
+            <a href="#" class="list-group-item list-group-item-action text-white bg-dark ">Contact</a>
+            <a href="#" class="list-group-item list-group-item-action text-white bg-dark ">Utilisateur</a>
+        </div>
+    </div>
+
+    {# admin content #}
+    <div class="col-md-10">
+        {% block adminContent %}
+        {% endblock %}
+        
+    </div>
+</div>
+{% endblock %}

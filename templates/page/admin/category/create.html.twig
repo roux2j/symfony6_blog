@@ -1,0 +1,22 @@
+{% extends "theme/theme_admin.html.twig" %}
+
+{% block title %}Admin - nouvelle categorie{% endblock %}
+
+
+{% block adminContent %}
+    <h1 class="text-center my-3 display-5">Nouvelle categorie</h1>
+
+    <div class="container">
+        {{form_start(form)}}
+        <div class="mb-3">
+            <label for="category_name">Nom</label>
+            <div class="text-danger">{{form_errors(form.name)}}</div>
+            {{form_widget(form.name, {'attr': {'class': 'form-control', 'autofocus' :  true }}) }}
+        </div>
+
+        <div class="mb-3">
+            <input type="submit" class="btn btn-primary" value="Créer" formnovalidate>
+        </div>
+        {{form_end(form)}}
+    </div>
+{% endblock %}

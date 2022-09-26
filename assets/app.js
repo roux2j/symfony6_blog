@@ -6,7 +6,10 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
-import './styles/app.css';
+import './styles/app.scss';
+
+// loading the javascript parts of Bootstrap 5.1.3
+require('bootstrap');
 
 // start the Stimulus application
 import './bootstrap';

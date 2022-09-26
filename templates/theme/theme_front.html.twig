@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.getLocale }}">
+
+<head>
+    {# début : encodage les caractères #}
+    <meta charset="UTF-8">
+    {# fin  : encodage les caractères #}
+
+    {# début : minimum de responsive #}
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {# fin : minimum de responsive #}
+
+
+    {# début : mise en place du titre de l'onglet dynmaiquement #}
+    <title> médecine du monde - {% block title %}{% endblock %}</title>
+    {# fin :  mise en place du titre de l'onglet dynmaiquement #}
+
+    {# début mise en place des balises meta pour le reférencement naturel #}
+    <meta name="description" content="{% block description %}{% endblock %}">
+    <meta name="robots" content="index allow all">
+    <meta name="keywords" content="DWWM, Projet, Frontend, Backend, Fullstack , PHP, PHP8 {% block keywords %}x{% endblock %}">
+    {# fin mise en place des balises meta pour le reférencement naturel + créer fichier robots.txt dans groupe public #}
+
+
+    {# début mise en place de la favicon #}
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-touch-icon.png')}}">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon/favicon-32x32.png')}}">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon/favicon-16x16.png')}}">
+<link rel="manifest" href="{{asset('favicon/site.webmanifest')}}">
+<link rel="mask-icon" href="{{asset('favicon/safari-pinned-tab.svg')}}" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+    {# fin mise en place de la favicon #}
+
+    {# début : google font #}
+    <link rel="preconnect" href="https://fonts.googleapis.com"> 
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
+    {# fin : google font #}
+
+
+
+    {# début mise en place du css et du javascript avec webpack encore #}
+
+    {% block webpack_stylesheets %}
+    {{
+        encore_entry_link_tags('app')
+    }}
+    {% endblock %}
+
+    {% block webpack_javascripts %}
+    {{
+        encore_entry_script_tags('app')
+    }}
+    {% endblock %}
+
+    {# fin mise en place du css et du javascript avec webpack encore #}
+
+    <style>
+    .bg-primary,
+.btn-primary,
+.badge-primary,
+.alert-primary, .bg-white {
+    background-image: linear-gradient(to right, #ca66ba 0%, #865df5 50%)!important;
+    border:none !important;
+    color: white !important;
+}
+
+.bg-light{
+    background-color: #FAE7DD !important;
+}
+
+.btn-light{
+    background-image: #FAE7DD !important;
+
+}
+
+/* *,
+::before,
+::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  height: 100vh;
+  background-image: repeating-linear-gradient(
+      135deg,
+      rgba(93, 93, 93, 0.1) 0px,
+      rgba(93, 93, 93, 0.1) 2px,
+      transparent 2px,
+      transparent 4px
+    ),
+    linear-gradient(90deg, rgb(255, 255, 255), rgb(255, 255, 255));
+} */
+
+.containertxt {
+  overflow: hidden;
+  display: flex;
+  /* Fonctionne avec toutes les tailles */
+  width: 100%;
+  
+  transform: translateY(-50%);
+  /* pour rotate on enlève le translate et on rajoute le rotate */
+  /* transform:  rotate(90deg); */
+}
+
+.txt {
+    animation: scrollTxt 25s linear infinite;
+    /* text-shadow: 0 0 5px white, 0 0 2px white; */
+    white-space: nowrap;
+}
+
+
+
+.txt > a {
+color:black;
+/* font-family: armata; */
+font-size: 6rem;
+text-decoration: none; 
+}
+
+.quicksand{
+    font-family: 'Quicksand', sans-serif !important;
+    font-weight: 500;
+}
+
+
+.txt > a:hover{
+    /* Fallback: Set a background color. */
+  
+  /* Create the gradient. */
+  background-image: linear-gradient(to right, #ca66ba 0%, #865df5 50%)!important;
+
+  /* Set the background size and repeat properties. */
+  background-size: 100%;
+  background-repeat: repeat;
+  
+
+  /* Use the text as a mask for the background. */
+  /* This will show the gradient as a text color rather than element bg. */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; 
+  -moz-background-clip: text;
+  -moz-text-fill-color: transparent;
+}
+
+.lineargradient{
+    /* Fallback: Set a background color. */
+  
+  /* Create the gradient. */
+  background-image: linear-gradient(to right, #ca66ba 0%, #865df5 50%)!important;
+
+  /* Set the background size and repeat properties. */
+  background-size: 100%;
+  background-repeat: repeat;
+  
+
+  /* Use the text as a mask for the background. */
+  /* This will show the gradient as a text color rather than element bg. */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; 
+  -moz-background-clip: text;
+  -moz-text-fill-color: transparent;
+}
+
+@keyframes scrollTxt {
+  0% {
+    transform: translate(-100%, 0);
+  }
+  100% {
+    transform: translate(0%, 0);
+  }
+}
+
+
+
+.list-group > a::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  border-radius: 4px;
+  background-color: white;
+  bottom: 0;
+  left: 0;
+  transform-origin: right;
+  transform: scaleX(0);
+  transition: transform .3s ease-in-out;
+}
+
+.list-group > a:hover::before {
+  transform-origin: left;
+  transform: scaleX(1);
+}
+
+.border-gradient {
+  border: 10px solid;
+  border-image-slice: 1;
+  border-width: 5px;
+}
+.border-gradient-purple {
+  border-image-source: linear-gradient(to right, #ca66ba 0%, #865df5 50%)!important;
+  animation: AnimationName 1s ease infinite;
+}
+
+@keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+
+.btn:hover{
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.279)
+}
+
+#navbarNav > ul > li > a:hover {
+    color:black !important;
+}
+
+#navbarNav > ul > li > a {
+    font-size:1.3rem !important;
+
+}
+
+.active {
+    color:black !important;
+}
+
+.hovercard:hover 
+{
+    transform: scale(1.02);
+}
+
+.logohover:hover{
+    transform: scale(1.08); 
+}
+
+.no-decoration{
+    text-decoration: none;
+}
+
+/* area */
+
+.area{
+    width: 100%;
+    height:100vh;
+    position:fixed;
+  /* right:-50%; */
+  /* top:0; */
+    z-index:-1;
+    
+   
+}
+
+.circles{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* overflow: hidden; */
+}
+
+.circles li{
+    position: absolute;
+    display: block;
+    list-style: none;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(to right, #ca66ba 0%, #865df5 50%)!important;
+    animation: animate 25s linear infinite;
+    bottom: -150px;
+    
+}
+
+.circles li:nth-child(1){
+    left: 25%;
+    width: 80px;
+    height: 80px;
+    animation-delay: 0s;
+}
+
+
+.circles li:nth-child(2){
+    left: 10%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 2s;
+    animation-duration: 12s;
+}
+
+.circles li:nth-child(3){
+    left: 70%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 4s;
+}
+
+.circles li:nth-child(4){
+    left: 40%;
+    width: 60px;
+    height: 60px;
+    animation-delay: 0s;
+    animation-duration: 18s;
+}
+
+.circles li:nth-child(5){
+    left: 65%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 0s;
+}
+
+.circles li:nth-child(6){
+    left: 75%;
+    width: 110px;
+    height: 110px;
+    animation-delay: 3s;
+}
+
+.circles li:nth-child(7){
+    left: 35%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 7s;
+}
+
+.circles li:nth-child(8){
+    left: 50%;
+    width: 25px;
+    height: 25px;
+    animation-delay: 15s;
+    animation-duration: 45s;
+}
+
+.circles li:nth-child(9){
+    left: 20%;
+    width: 15px;
+    height: 15px;
+    animation-delay: 2s;
+    animation-duration: 35s;
+}
+
+.circles li:nth-child(10){
+    left: 85%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 0s;
+    animation-duration: 11s;
+}
+
+
+
+@keyframes animate {
+
+    0%{
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+        border-radius: 100%;
+    }
+
+    50%{
+        transform: translateY(-1000px) rotate(720deg);
+        opacity: 0;
+        border-radius: 100%;
+    }
+
+    100%{
+        transform: translateY(-1000px) rotate(720deg);
+        opacity: 0;
+        border-radius: 100%;
+    }
+}
+
+/* waviy */
+
+.waviy
+{
+    word-spacing: -.4ch;
+}
+
+.waviy span {
+  /* font-family: 'Alfa Slab One', cursive; */
+  /* position: relative; */
+  display: inline-block;
+  font-family: 'Quicksand', sans-serif !important;
+  font-size:4.5rem;
+  /* color: #fff; */
+  /* text-transform: uppercase; */
+  animation: waviy 4.7s;
+  animation-iteration-count: 1;
+  animation-delay: calc(.2s * var(--i));
+  
+}
+@keyframes waviy {
+  0%,40%,100% {
+    transform: translateY(0)
+  }
+  20% {
+    transform: translateY(-20px)
+  }
+}
+
+</style>
+
+
+    {# début mise en place du css et du javascript specifique à chaque page #}
+
+    {% block css %}{% endblock %}
+
+    {% block js %}{% endblock %}
+
+    {# fin mise en place du css et du javascript avec webpack encore #}
+
+
+</head>
+
+<body class="bg-light">
+
+    
+
+    {# Début : Mise en place de la navbar #}
+    {% include "layout/navbar/_navbar_front.html.twig" %}
+    {# Fin : Mise en place de la navbar #}
+
+
+    {# Début : Mise en place de la section d'introduction #}
+    {% block intro_section %}{% endblock %}
+    {# Fin : Mise en place de la section d'introduction #}
+
+
+    {# Début : Mise en place de la main #}
+    <main class="container-fluid">
+        {% block main %}{% endblock %}
+    </main>
+    {# Fin : Mise en place de la main #}
+
+
+    {# Début : Mise en place de la footer #}
+    {% include "layout/footer/_footer_front.html.twig" %}
+    {# Fin : Mise en place de la footer #}
+
+</body>
+
+</html>
+
+
+

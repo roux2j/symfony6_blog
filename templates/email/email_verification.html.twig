@@ -1,0 +1,7 @@
+<h2>Vérification de votre compte sur le site medecine-du-monde.fr</h2>
+
+<p>Veuillez cliquer sur le lien ci-dessus pour vérifier votre compte : </p>
+
+<a href="{{ absolute_url(path('visitor.registration.email_verification', {'id': user_id, 'token': token_for_email_verification})) }}">Vérifier mon compte</a> 
+
+<p>Vous devez vérifier votre compte avant le : {{ deadline_for_email_verification }}</p>

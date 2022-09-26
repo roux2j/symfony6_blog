@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.getLocale }}">
+
+<head>
+    {# début : encodage les caractères #}
+    <meta charset="UTF-8">
+    {# fin  : encodage les caractères #}
+
+    {# début : minimum de responsive #}
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {# fin : minimum de responsive #}
+
+
+    {# début : mise en place du titre de l'onglet dynmaiquement #}
+    <title> médecine du monde - {% block title %}{% endblock %}</title>
+    {# fin :  mise en place du titre de l'onglet dynmaiquement #}
+
+
+    {# début mise en place de la favicon #}
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-touch-icon.png')}}">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon/favicon-32x32.png')}}">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon/favicon-16x16.png')}}">
+<link rel="manifest" href="{{asset('favicon/site.webmanifest')}}">
+<link rel="mask-icon" href="{{asset('favicon/safari-pinned-tab.svg')}}" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+    {# fin mise en place de la favicon #}
+
+
+
+    {# début mise en place du css et du javascript avec webpack encore #}
+
+    {% block webpack_stylesheets %}
+    {{
+        encore_entry_link_tags('app')
+    }}
+    {% endblock %}
+
+    {% block webpack_javascripts %}
+    {{
+        encore_entry_script_tags('app')
+    }}
+    {% endblock %}
+
+    {# fin mise en place du css et du javascript avec webpack encore #}
+    
+    {# début mise en place jquery uniquement là ou j'en ai besoin#}
+    {% block jquery %}{% endblock %}
+    {# fin mise en place #}
+
+    {# début mise en place de l'editeur de text #}
+    {% block tinymce %}{% endblock %}
+    {# fin mise en place de l'editeur de text #}
+
+    {# début mise en place du cdn fontawesome #}
+    {% block font_awesome %}{% endblock %}
+    {# fin mise en place fontAwesome #}
+
+    {# début mise en place du cdn de datatables  #}
+    {% block datatables %}{% endblock %}
+    {# fin mise en place du cdn de datatables #}
+
+
+    {# début mise en place du cdn de select2  #}
+    {% block select2 %}{% endblock %}
+    {# fin mise en place du cdn de select2 #}
+
+
+    {# début mise en place du css et du javascript specifique à chaque page #}
+
+    {% block css %}{% endblock %}
+
+    {% block js %}{% endblock %}
+
+    {# fin mise en place du css et du javascript avec webpack encore #}
+
+
+</head>
+
+<body class="bg-light">
+
+    {# Début : Mise en place de la navbar #}
+    {% include "layout/navbar/_navbar_back.html.twig" %}
+    {# Fin : Mise en place de la navbar #}
+
+
+    {# Début : Mise en place de la section d'introduction #}
+    {% block intro_section %}{% endblock %}
+    {# Fin : Mise en place de la section d'introduction #}
+
+
+    {# Début : Mise en place de la main #}
+    <main class="container-fluid">
+        {% block main %}{% endblock %}
+    </main>
+    {# Fin : Mise en place de la main #}
+
+
+    {# Début : Mise en place de la footer #}
+    {% include "layout/footer/_footer_back.html.twig" %}
+    {# Fin : Mise en place de la footer #}
+
+</body>
+
+</html>
+
+
+

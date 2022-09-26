@@ -1,0 +1,70 @@
+{% extends "theme/theme_admin.html.twig" %}
+
+{% block title %}Espace d'administration / Liste des tags {% endblock %}
+
+{% block font_awesome %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block datatables %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/jq-3.6.0/dt-1.12.1/datatables.min.css"/>
+ 
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/jq-3.6.0/dt-1.12.1/datatables.min.js"></script>
+<script>
+    $(document).ready(function() {
+    $('#myTable').DataTable( {
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json'
+        }
+    } );
+} );
+</script>
+{% endblock %}
+
+{% block adminContent %}
+    <h1 class="text-center my-3 display-5">Liste des tags</h1>
+
+    {% for message in app.flashes('warning') %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+    <div class="d-flex justify-content-end align-items-center my-3">
+        <a href="{{path('admin.tag.create')}}" class="btn btn-primary">Nouveau tag</a>
+    </div>
+
+    <div class="table-responsive">
+        <table id="myTable" class="table table-bordered table-striped table-hover text-center">
+            <thead class="bg-dark text-white">
+                <tr>
+                    <th>Id</th>
+                    <th>Nom</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tags in tags %}
+                    <tr>
+                        <td>{{ tags.id }}</td>
+                        <td>{{ tags.name }}</td>
+                        <td>
+                            <a href="{{ path('admin.tag.edit', {'id': tags.id}) }}" class=" p-1"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <form action="{{ path('admin.tag.delete', {'id': tags.id}) }}" method="post" class="d-inline p-1">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_category_' ~   tags.id) }}" />
+                                <button class="border-0" onclick="return confirm('⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️ Attention!!!  En supprimant un tag, vous allez supprimer tous les articles qui lui sont associés ?')" type="submit"><i class="fa-solid fa-trash-can text-danger"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

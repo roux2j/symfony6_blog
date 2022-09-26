@@ -1,0 +1,22 @@
+{% extends "theme/theme_admin.html.twig" %}
+
+{% block title %}Admin / Lire l'article n°{{post.id}} : {{post.title}}{% endblock %}
+
+{% block adminContent %}
+    <div class="container my-3">
+        <div class="text-center">
+            <img src="{{vich_uploader_asset(post, 'imageFile')}}" alt="" class="img-fluid">
+        </div>
+
+        <div class="text-center">
+            <h1 class="my-3 display-5">{{post.title}}</h1>
+            <small class="lead">Créé le {{post.createdAt|date("m/d/y")}} et modifié le {{post.updatedAt|date("m/d/y à H:i:s")}}</small> 
+        </div>
+
+        <div>
+            {{ post.content|raw }}
+        </div>
+    </div>
+
+
+{% endblock %}

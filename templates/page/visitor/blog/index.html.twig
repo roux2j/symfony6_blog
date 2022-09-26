@@ -1,0 +1,65 @@
+{% extends "theme/theme_front.html.twig" %}
+
+{% block main %}
+    <h1 class="text-center my-3 display-5 quicksand">Liste des articles</h1>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                {# Affichage des catégories #}
+                <div>
+                    <h2 class="quicksand">Les catégories :</h2>
+
+                    <div class="list-group">
+                        {% for category in categories %}
+                            <a href="{{path('visitor.blog.post.filter_by_category', {'id' : category.id,'slug': category.slug})}}" class="list-group-item list-group-item-action bg-white">{{category.name}}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <hr class="my-4">
+                {# Affichage des tags #}
+                <div>
+                    <h2 class="quicksand">Les tag :</h2>
+
+                    <div class="list-group">
+                        {% for tag in tags %}
+                            <a href="{{path('visitor.blog.post.filter_by_tag', {'id' : tag.id,'slug': tag.slug})}}" class="list-group-item list-group-item-action bg-white">{{tag.name}}</a>
+
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                {# Affichage des articles #}
+
+                <div class="row">
+                    {% for post in posts %}
+                    <div class="col-md-12 mx-auto mb-5 bg-light">
+                        <a href="{{path('visitor.blog.post.show', {'id':post.id,'slug': post.slug}) }}" class="no-decoration text-black">
+                            <div class="border-gradient border-gradient-purple hovercard">
+                                <article class="shadow border">
+    
+                                    {% if post.image %}
+                                        <img class="w-100" src="{{ vich_uploader_asset(post, 'imageFile')  | imagine_filter('visitor_post_image_thumbnail')  }}" alt="{{ post.title }}">
+                                    {% endif %}
+                                    <div class="container my-3">
+                                        <h3 class="lineargradient quicksand">{{ post.title }}</h3>
+                                        <p>Catégorie : {{post.category.name}}</p>
+                                        <p>
+                                            <small>publié
+                                            {{post.publishedAt|ago }}</small>
+                                        </p>
+                                        {# <p>{{ post.content|slice(0,8)|striptags }}</p> #}
+                                        <a href="{{path('visitor.blog.post.show', {'id':post.id,'slug': post.slug}) }}" class="btn btn-primary quicksand">Lire l'article</a>
+                                    </div>
+                                </article>
+                            </div>
+                        </a>
+                    </div>
+                        {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

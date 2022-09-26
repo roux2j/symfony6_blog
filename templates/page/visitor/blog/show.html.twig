@@ -1,0 +1,35 @@
+{% extends "theme/theme_front.html.twig" %}
+
+{% block title %}{{post.title}} - médecine du monde {% endblock %}
+
+{% block main %}
+
+<div class="container">
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb py-5">
+            <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{path('visitor.blog.index')}}">Liste des articles</a></li>
+            <li class="breadcrumb-item active" aria-current="page"> article n°{{post.id}}</li>
+            </ol>
+        </nav>
+    </div>
+    
+    <div class="container my-3">
+        <div class="text-center">
+            <img src="{{vich_uploader_asset(post, 'imageFile')}}" alt="" class="img-fluid border-gradient border-gradient-purple">
+        </div>
+    
+        <div class="text-center m-5">
+            <h1 class="my-3 display-5 lineargradient quicksand">{{post.title}}</h1>
+            <small class="lead">Créé le {{post.createdAt|date("m/d/y")}} et modifié le {{post.updatedAt|date("m/d/y à H:i:s")}}</small> 
+        </div>
+    
+        <div>
+            {{ post.content|raw }}
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

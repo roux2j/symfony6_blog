@@ -1,0 +1,30 @@
+// Contenu abstraits comme les variables, les fonctions...
+@import "abstract/variables";
+
+
+// the ~ allows you to reference things in node_modules
+@import "~bootstrap/scss/bootstrap";
+
+
+// La base
+@import "base/typography";
+@import "base/color";
+
+
+// Les composants indépendants
+// @import "component/"
+
+
+// Les layouts
+// Ce sont des composants dépendants d'autres composants
+@import "layout/main";
+
+
+// Les pages
+// Design spécifique à chaque page
+@import "page/welcome-index-intro-section";
+
+
+// Les themes
+// Design spécifique à chaque thème
+// @import "theme/"

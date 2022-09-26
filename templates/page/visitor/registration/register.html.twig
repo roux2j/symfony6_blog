@@ -1,0 +1,105 @@
+{% extends "theme/theme_front.html.twig" %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block main %}
+<h1 class="text-center display-5 mt-5 quicksand">Inscription</h1>
+<div class="heading-line"></div>
+
+<div class="container my-3">
+    <div class="row">
+        <div class="col-md-7 mx-auto p-4 bg-white shadow">
+            {{ form_start(registrationForm) }}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="registration_form_firstName">Prénom</label>
+                        <div class="text-danger">{{ form_errors(registrationForm.firstName)}}</div>
+                        {{ form_widget(registrationForm.firstName, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="registration_form_lastName">Nom</label>
+                        <div class="text-danger">{{ form_errors(registrationForm.lastName)}}</div>
+                        {{ form_widget(registrationForm.lastName, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <label for="registration_form_email">Email</label>
+                        <div class="text-danger">{{ form_errors(registrationForm.email)}}</div>
+                        {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <label for="registration_form_password_first">Mot de passe</label>
+                        <div class="text-danger">{{ form_errors(registrationForm.password.first)}}</div>
+                        {{ form_widget(registrationForm.password.first, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <label for="registration_form_password_second">Confirmation du mot de passe</label>
+                        <div class="text-danger">{{ form_errors(registrationForm.password.second)}}</div>
+                        {{ form_widget(registrationForm.password.second, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <div class="text-danger">{{ form_errors(registrationForm.agreeTerms)}}</div>
+                        {{ form_widget(registrationForm.agreeTerms) }}
+                        <label for="registration_form_agreeTerms">Lire et accepter <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop">les conditions générales
+                                d'utilisation</a></label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <input formnovalidate type="submit" class="btn bg-light" value="S'inscrire" />
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">les conditions générales d'utilisation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-black">
+                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. A perferendis maiores consectetur, rem eveniet impedit reprehenderit. Voluptatibus vel unde facilis rerum quis dolorem voluptatum maxime sint quibusdam, tempore molestiae officia.
+                            Sit debitis dolor eaque perferendis eius facilis ab! Nemo et saepe temporibus odit quas optio vero amet aperiam animi, eum nobis quae enim velit alias eaque consequatur provident. Earum, facere!
+                            Eaque quo beatae amet illum similique voluptate quia nulla dicta dolorum odio minima ea, atque laborum ad corporis saepe placeat cumque magni aut impedit deserunt? Ad unde accusantium tempore atque!
+                            Tempore tempora sapiente placeat obcaecati quas, illum possimus exercitationem minima eveniet! Id temporibus amet necessitatibus vero quo. Blanditiis quaerat vero qui eaque optio, iure nesciunt repellat, dolore voluptates, ab natus?
+                            Quas blanditiis eius voluptatem distinctio debitis non sed expedita amet, reiciendis fugit odio dolore minus aut delectus sunt mollitia, esse quod animi doloremque sit corporis quam aspernatur eaque. Incidunt, atque?
+                            Enim sit natus iure omnis aliquam ad fuga dignissimos amet nobis alias, suscipit, accusantium blanditiis sapiente unde explicabo dicta eveniet magnam quae harum saepe? Nisi hic labore culpa reprehenderit esse!
+                            Dolores facilis, cum asperiores hic nisi ipsam corporis molestiae enim quia veritatis totam a odit maiores recusandae delectus rerum officiis? Adipisci officia consequatur repellat distinctio cupiditate delectus facilis voluptas quod.
+                            Officiis laborum numquam explicabo error nulla. Cum distinctio cumque, aperiam quibusdam, quaerat commodi tempora mollitia numquam ipsa vitae suscipit eos deserunt repudiandae quis, eius ut nulla! Recusandae in laudantium aut.
+                            Qui molestias quam temporibus saepe omnis? Odio facilis distinctio repellat nostrum, quae, est quia ex, repudiandae sunt omnis numquam ad? Cumque exercitationem provident aliquid fugit unde quaerat, officia corrupti illum?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">fermer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends 'theme/theme_front.html.twig' %}
+
+{% block title %} Page d'accueil
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+
+{% block intro_section %}
+    <div class="area" >
+        <ul class="circles">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                {# <li></li>
+                <li></li> #}
+        </ul>
+    </div >
+    <section class="welcome-index-intro-section d-flex justify-content-center align-items-center mt-2">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7 intro-section-text text-center mt-5 ">
+                        <div class="waviy">
+                            <span style="--i:1">B</span>
+                            <span style="--i:2">i</span>
+                            <span style="--i:3">e</span>
+                            <span style="--i:4">n</span>
+                            <span style="--i:5">v</span>
+                            <span style="--i:6">e</span>
+                            <span style="--i:7">n</span>
+                            <span style="--i:8">u</span>
+                            <span style="--i:9">e</span>
+                            <br>
+                            <span style="--i:10">S</span>
+                            <span style="--i:11">u</span>
+                            <span style="--i:12">r</span>
+                            <span style="--i:13">&nbsp;</span>
+                            <span style="--i:14">M</span>
+                            <span style="--i:15">o</span>
+                            <span style="--i:16">n</span>
+                            <span style="--i:17">&nbsp;</span>
+                            <span style="--i:18">B</span>
+                            <span style="--i:19">l</span>
+                            <span style="--i:20">o</span>
+                            <span style="--i:21">g</span>
+                           </div>
+                    
+                        {# <h1 class="display-2">
+                            <span class="display-2--intro quicksand">Bienvenue <br> sur mon blog</span>
+                        </h1> #}
+                        {# <span class="display-2--description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore.</span> #}
+                        <a href="{{ path('visitor.blog.index') }}" class="mt-4 btn btn-lg btn-primary quicksand"> Lire les articles </a>
+                    
+                </div>
+                <div class="col-md-5 intro-section-image">
+                    <div class="text-center">
+                        <img class="img-fluid" src="{{asset('image/static/590E1FF9-AE3B-4083-9201-AB67E4D6CEAC-1.png')}}" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="mt-5">
+     
+        <div class="containertxt">
+            
+            <span class="txt t1" >
+                {% for category in categories %}
+                <a class="quicksand" href="{{path('visitor.blog.post.filter_by_category', {'id' : category.id,'slug': category.slug})}}">{{category.name}}&nbsp;</a>
+                {% endfor %}
+            </span>
+            <span class="txt t1" >
+                {% for category in categories %}
+                <a class="quicksand" href="{{path('visitor.blog.post.filter_by_category', {'id' : category.id,'slug': category.slug})}}">{{category.name}}&nbsp;</a>
+                {% endfor %}
+            </span>
+
+    </section>
+{% endblock %}
+
+{% block main %}
+        
+
+    <h1 class="text-center my-3 mb-5 display-5 quicksand">Les dernier articles :</h1>
+
+    <div class="container-fluid">
+        
+        
+                
+                {# Affichage des articles #}
+
+                <div class="row">
+                    {% for post in posts %}
+                    <div class="col-md-6 mx-auto bg-light">
+                        <a href="{{path('visitor.blog.post.show', {'id':post.id,'slug': post.slug}) }}" class="no-decoration text-black">
+                            <div class="border-gradient border-gradient-purple hovercard">
+                                <article class="shadow border">
+    
+                                    {% if post.image %}
+                                        <img class="w-100 " src="{{ vich_uploader_asset(post, 'imageFile')  | imagine_filter('visitor_post_image_thumbnail')  }}" alt="{{ post.title }}">
+                                    {% endif %}
+                                    <div class="container my-3">
+                                        <h3 class="lineargradient quicksand">{{ post.title }}</h3>
+                                        <p>Catégorie : {{post.category.name}}</p>
+                                        <p>
+                                            <small>publié
+                                            {{post.publishedAt|ago }}</small>
+                                        </p>
+                                        {# <p>{{ post.content|slice(0,8)|striptags }}</p> #}
+                                        <a href="{{path('visitor.blog.post.show', {'id':post.id,'slug': post.slug}) }}" class="btn btn-primary quicksand">Lire l'article</a>
+                                    </div>
+                                </article>
+                            </div>
+                        </a>
+                        </div>
+                        {% endfor %}
+                </div>
+        
+        
+    </div>
+
+{% endblock %}
