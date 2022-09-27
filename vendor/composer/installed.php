@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'dbc97ed5f8ab88184dbb75126481aa8eef46715c',
+        'reference' => 'a3b25c06a976b52e9aa87c78b85da56d8b43fe76',
         'name' => '__root__',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'dbc97ed5f8ab88184dbb75126481aa8eef46715c',
+            'reference' => 'a3b25c06a976b52e9aa87c78b85da56d8b43fe76',
             'dev_requirement' => false,
         ),
         'behat/transliterator' => array(
@@ -681,6 +681,15 @@
             'install_path' => __DIR__ . '/../stof/doctrine-extensions-bundle',
             'aliases' => array(),
             'reference' => 'a2bffca41974d1c968557b343e269a60a8d5ffa4',
+            'dev_requirement' => false,
+        ),
+        'symfony/apache-pack' => array(
+            'pretty_version' => 'v1.0.1',
+            'version' => '1.0.1.0',
+            'type' => 'symfony-pack',
+            'install_path' => __DIR__ . '/../symfony/apache-pack',
+            'aliases' => array(),
+            'reference' => '3aa5818d73ad2551281fc58a75afd9ca82622e6c',
             'dev_requirement' => false,
         ),
         'symfony/asset' => array(
