@@ -56,7 +56,7 @@ class EmailValidator extends ConstraintValidator
             return;
         }
 
-        if (!is_scalar($value) && !$value instanceof \Stringable) {
+        if (!\is_scalar($value) && !$value instanceof \Stringable) {
             throw new UnexpectedValueException($value, 'string');
         }
 
@@ -70,6 +70,10 @@ class EmailValidator extends ConstraintValidator
         }
 
         if (null === $constraint->mode) {
+            if (Email::VALIDATION_MODE_STRICT === $this->defaultMode && !class_exists(EguliasEmailValidator::class)) {
+                throw new LogicException(sprintf('The "egulias/email-validator" component is required to make the "%s" constraint default to strict mode.', EguliasEmailValidator::class));
+            }
+
             $constraint->mode = $this->defaultMode;
         }
 

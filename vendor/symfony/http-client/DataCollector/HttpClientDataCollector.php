@@ -178,8 +178,7 @@ final class HttpClientDataCollector extends DataCollector implements LateDataCol
             return null;
         }
 
-        $debug = explode("\n", $trace['info']['debug']);
-        $url = self::mergeQueryString($trace['url'], $trace['options']['query'] ?? [], true);
+        $url = $trace['info']['original_url'] ?? $trace['info']['url'] ?? $trace['url'];
         $command = ['curl', '--compressed'];
 
         if (isset($trace['options']['resolve'])) {
@@ -194,18 +193,27 @@ final class HttpClientDataCollector extends DataCollector implements LateDataCol
         $dataArg = [];
 
         if ($json = $trace['options']['json'] ?? null) {
-            $dataArg[] = '--data '.escapeshellarg(json_encode($json, \JSON_PRETTY_PRINT));
+            if (!$this->argMaxLengthIsSafe($payload = self::jsonEncode($json))) {
+                return null;
+            }
+            $dataArg[] = '--data '.escapeshellarg($payload);
         } elseif ($body = $trace['options']['body'] ?? null) {
             if (\is_string($body)) {
+                if (!$this->argMaxLengthIsSafe($body)) {
+                    return null;
+                }
                 try {
                     $dataArg[] = '--data '.escapeshellarg($body);
-                } catch (\ValueError $e) {
+                } catch (\ValueError) {
                     return null;
                 }
             } elseif (\is_array($body)) {
                 $body = explode('&', self::normalizeBody($body));
                 foreach ($body as $value) {
-                    $dataArg[] = '--data '.escapeshellarg(urldecode($value));
+                    if (!$this->argMaxLengthIsSafe($payload = urldecode($value))) {
+                        return null;
+                    }
+                    $dataArg[] = '--data '.escapeshellarg($payload);
                 }
             } else {
                 return null;
@@ -214,7 +222,7 @@ final class HttpClientDataCollector extends DataCollector implements LateDataCol
 
         $dataArg = empty($dataArg) ? null : implode(' ', $dataArg);
 
-        foreach ($debug as $line) {
+        foreach (explode("\n", $trace['info']['debug']) as $line) {
             $line = substr($line, 0, -1);
 
             if (str_starts_with('< ', $line)) {
@@ -240,5 +248,15 @@ final class HttpClientDataCollector extends DataCollector implements LateDataCol
         }
 
         return implode(" \\\n  ", $command);
+    }
+
+    /**
+     * Let's be defensive : we authorize only size of 8kio on Windows for escapeshellarg() argument to avoid a fatal error.
+     *
+     * @see https://github.com/php/php-src/blob/9458f5f2c8a8e3d6c65cc181747a5a75654b7c6e/ext/standard/exec.c#L397
+     */
+    private function argMaxLengthIsSafe(string $payload): bool
+    {
+        return \strlen($payload) < ('\\' === \DIRECTORY_SEPARATOR ? 8100 : 256000);
     }
 }

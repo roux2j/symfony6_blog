@@ -46,9 +46,7 @@ class AttributeDriver extends CompatibilityAnnotationDriver
      */
     protected $reader;
 
-    /**
-     * @param array<string> $paths
-     */
+    /** @param array<string> $paths */
     public function __construct(array $paths)
     {
         if (PHP_VERSION_ID < 80000) {
@@ -108,7 +106,10 @@ class AttributeDriver extends CompatibilityAnnotationDriver
      */
     public function loadMetadataForClass($className, PersistenceClassMetadata $metadata): void
     {
-        $reflectionClass = $metadata->getReflectionClass();
+        $reflectionClass = $metadata->getReflectionClass()
+            // this happens when running annotation driver in combination with
+            // static reflection services. This is not the nicest fix
+            ?? new ReflectionClass($metadata->name);
 
         $classAttributes = $this->reader->getClassAnnotations($reflectionClass);
 
@@ -251,10 +252,10 @@ class AttributeDriver extends CompatibilityAnnotationDriver
 
                     $metadata->setDiscriminatorColumn(
                         [
-                            'name'             => $discrColumnAttribute->name,
-                            'type'             => $discrColumnAttribute->type ?: 'string',
-                            'length'           => $discrColumnAttribute->length ?: 255,
-                            'columnDefinition' => $discrColumnAttribute->columnDefinition,
+                            'name'             => isset($discrColumnAttribute->name) ? (string) $discrColumnAttribute->name : null,
+                            'type'             => isset($discrColumnAttribute->type) ? (string) $discrColumnAttribute->type : 'string',
+                            'length'           => isset($discrColumnAttribute->length) ? (int) $discrColumnAttribute->length : 255,
+                            'columnDefinition' => isset($discrColumnAttribute->columnDefinition) ? (string) $discrColumnAttribute->columnDefinition : null,
                         ]
                     );
                 } else {
@@ -412,6 +413,10 @@ class AttributeDriver extends CompatibilityAnnotationDriver
                         'name' => $joinTableAttribute->name,
                         'schema' => $joinTableAttribute->schema,
                     ];
+
+                    if ($joinTableAttribute->options) {
+                        $joinTable['options'] = $joinTableAttribute->options;
+                    }
                 }
 
                 foreach ($this->reader->getPropertyAnnotationCollection($property, Mapping\JoinColumn::class) as $joinColumn) {
@@ -650,12 +655,13 @@ class AttributeDriver extends CompatibilityAnnotationDriver
      *                   nullable: bool,
      *                   onDelete: mixed,
      *                   columnDefinition: string|null,
-     *                   referencedColumnName: string
+     *                   referencedColumnName: string,
+     *                   options?: array<string, mixed>
      *               }
      */
     private function joinColumnToArray($joinColumn): array
     {
-        return [
+        $mapping = [
             'name' => $joinColumn->name,
             'unique' => $joinColumn->unique,
             'nullable' => $joinColumn->nullable,
@@ -663,6 +669,12 @@ class AttributeDriver extends CompatibilityAnnotationDriver
             'columnDefinition' => $joinColumn->columnDefinition,
             'referencedColumnName' => $joinColumn->referencedColumnName,
         ];
+
+        if ($joinColumn->options) {
+            $mapping['options'] = $joinColumn->options;
+        }
+
+        return $mapping;
     }
 
     /**

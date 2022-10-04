@@ -24,6 +24,7 @@ use Doctrine\DBAL\Result;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Comparator;
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\DBAL\Schema\SchemaDiff;
 use Doctrine\DBAL\Schema\Synchronizer\SchemaSynchronizer;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Types;
@@ -157,7 +158,7 @@ class Connection implements ResetInterface
     {
         if ($this->driverConnection->getDatabasePlatform() instanceof MySQLPlatform) {
             try {
-                $this->driverConnection->delete($this->configuration['table_name'], ['delivered_at' => '9999-12-31']);
+                $this->driverConnection->delete($this->configuration['table_name'], ['delivered_at' => '9999-12-31 23:59:59']);
             } catch (DriverException $e) {
                 // Ignore the exception
             }
@@ -251,7 +252,7 @@ class Connection implements ResetInterface
     {
         try {
             if ($this->driverConnection->getDatabasePlatform() instanceof MySQLPlatform) {
-                return $this->driverConnection->update($this->configuration['table_name'], ['delivered_at' => '9999-12-31'], ['id' => $id]) > 0;
+                return $this->driverConnection->update($this->configuration['table_name'], ['delivered_at' => '9999-12-31 23:59:59'], ['id' => $id]) > 0;
             }
 
             return $this->driverConnection->delete($this->configuration['table_name'], ['id' => $id]) > 0;
@@ -264,7 +265,7 @@ class Connection implements ResetInterface
     {
         try {
             if ($this->driverConnection->getDatabasePlatform() instanceof MySQLPlatform) {
-                return $this->driverConnection->update($this->configuration['table_name'], ['delivered_at' => '9999-12-31'], ['id' => $id]) > 0;
+                return $this->driverConnection->update($this->configuration['table_name'], ['delivered_at' => '9999-12-31 23:59:59'], ['id' => $id]) > 0;
             }
 
             return $this->driverConnection->delete($this->configuration['table_name'], ['id' => $id]) > 0;
@@ -467,8 +468,9 @@ class Connection implements ResetInterface
             return;
         }
 
-        $comparator = new Comparator();
-        $schemaDiff = $comparator->compare($this->createSchemaManager()->createSchema(), $this->getSchema());
+        $schemaManager = $this->createSchemaManager();
+        $comparator = $this->createComparator($schemaManager);
+        $schemaDiff = $this->compareSchemas($comparator, $schemaManager->createSchema(), $this->getSchema());
 
         foreach ($schemaDiff->toSaveSql($this->driverConnection->getDatabasePlatform()) as $sql) {
             if (method_exists($this->driverConnection, 'executeStatement')) {
@@ -484,5 +486,19 @@ class Connection implements ResetInterface
         return method_exists($this->driverConnection, 'createSchemaManager')
             ? $this->driverConnection->createSchemaManager()
             : $this->driverConnection->getSchemaManager();
+    }
+
+    private function createComparator(AbstractSchemaManager $schemaManager): Comparator
+    {
+        return method_exists($schemaManager, 'createComparator')
+            ? $schemaManager->createComparator()
+            : new Comparator();
+    }
+
+    private function compareSchemas(Comparator $comparator, Schema $from, Schema $to): SchemaDiff
+    {
+        return method_exists($comparator, 'compareSchemas')
+            ? $comparator->compareSchemas($from, $to)
+            : $comparator->compare($from, $to);
     }
 }

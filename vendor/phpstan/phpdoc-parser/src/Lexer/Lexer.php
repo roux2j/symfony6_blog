@@ -2,9 +2,6 @@
 
 namespace PHPStan\PhpDocParser\Lexer;
 
-use function array_keys;
-use function assert;
-use function count;
 use function implode;
 use function preg_match_all;
 use const PREG_SET_ORDER;
@@ -49,6 +46,7 @@ class Lexer
 	public const TOKEN_OPEN_CURLY_BRACKET = 31;
 	public const TOKEN_CLOSE_CURLY_BRACKET = 32;
 	public const TOKEN_NEGATED = 33;
+	public const TOKEN_ARROW = 34;
 
 	public const TOKEN_LABELS = [
 		self::TOKEN_REFERENCE => '\'&\'',
@@ -69,6 +67,7 @@ class Lexer
 		self::TOKEN_VARIADIC => '\'...\'',
 		self::TOKEN_DOUBLE_COLON => '\'::\'',
 		self::TOKEN_DOUBLE_ARROW => '\'=>\'',
+		self::TOKEN_ARROW => '\'->\'',
 		self::TOKEN_EQUAL => '\'=\'',
 		self::TOKEN_OPEN_PHPDOC => '\'/**\'',
 		self::TOKEN_CLOSE_PHPDOC => '\'*/\'',
@@ -93,23 +92,17 @@ class Lexer
 	/** @var string|null */
 	private $regexp;
 
-	/** @var int[]|null */
-	private $types;
-
 	public function tokenize(string $s): array
 	{
-		if ($this->regexp === null || $this->types === null) {
-			$this->initialize();
+		if ($this->regexp === null) {
+			$this->regexp = $this->generateRegexp();
 		}
-
-		assert($this->regexp !== null);
-		assert($this->types !== null);
 
 		preg_match_all($this->regexp, $s, $matches, PREG_SET_ORDER);
 
 		$tokens = [];
 		foreach ($matches as $match) {
-			$tokens[] = [$match[0], $this->types[count($match) - 2]];
+			$tokens[] = [$match[0], (int) $match['MARK']];
 		}
 
 		$tokens[] = ['', self::TOKEN_END];
@@ -118,7 +111,7 @@ class Lexer
 	}
 
 
-	private function initialize(): void
+	private function generateRegexp(): string
 	{
 		$patterns = [
 			self::TOKEN_HORIZONTAL_WS => '[\\x09\\x20]++',
@@ -147,12 +140,13 @@ class Lexer
 			self::TOKEN_VARIADIC => '\\.\\.\\.',
 			self::TOKEN_DOUBLE_COLON => '::',
 			self::TOKEN_DOUBLE_ARROW => '=>',
+			self::TOKEN_ARROW => '->',
 			self::TOKEN_EQUAL => '=',
 			self::TOKEN_COLON => ':',
 
 			self::TOKEN_OPEN_PHPDOC => '/\\*\\*(?=\\s)\\x20?+',
 			self::TOKEN_CLOSE_PHPDOC => '\\*/',
-			self::TOKEN_PHPDOC_TAG => '@[a-z][a-z0-9-]*+',
+			self::TOKEN_PHPDOC_TAG => '@[a-z][a-z0-9-\\\\]*+',
 			self::TOKEN_PHPDOC_EOL => '\\r?+\\n[\\x09\\x20]*+(?:\\*(?!/)\\x20?+)?',
 
 			self::TOKEN_FLOAT => '(?:-?[0-9]++\\.[0-9]*+(?:e-?[0-9]++)?)|(?:-?[0-9]*+\\.[0-9]++(?:e-?[0-9]++)?)|(?:-?[0-9]++e-?[0-9]++)',
@@ -166,8 +160,11 @@ class Lexer
 			self::TOKEN_OTHER => '(?:(?!\\*/)[^\\s])++',
 		];
 
-		$this->regexp = '~(' . implode(')|(', $patterns) . ')~Asi';
-		$this->types = array_keys($patterns);
+		foreach ($patterns as $type => &$pattern) {
+			$pattern = '(?:' . $pattern . ')(*MARK:' . $type . ')';
+		}
+
+		return '~' . implode('|', $patterns) . '~Asi';
 	}
 
 }

@@ -97,6 +97,51 @@ use const PHP_VERSION_ID;
  *      declaredField?: string,
  *      options?: array<string, mixed>
  * }
+ * @psalm-type JoinColumnData = array{
+ *     name: string,
+ *     referencedColumnName: string,
+ *     unique?: bool,
+ *     quoted?: bool,
+ *     fieldName?: string,
+ *     onDelete?: string,
+ *     columnDefinition?: string,
+ *     nullable?: bool,
+ * }
+ * @psalm-type AssociationMapping = array{
+ *     cache?: array,
+ *     cascade: array<string>,
+ *     declared?: class-string,
+ *     fetch: mixed,
+ *     fieldName: string,
+ *     id?: bool,
+ *     inherited?: class-string,
+ *     indexBy?: string,
+ *     inversedBy: string|null,
+ *     isCascadeRemove: bool,
+ *     isCascadePersist: bool,
+ *     isCascadeRefresh: bool,
+ *     isCascadeMerge: bool,
+ *     isCascadeDetach: bool,
+ *     isOnDeleteCascade?: bool,
+ *     isOwningSide: bool,
+ *     joinColumns?: array<JoinColumnData>,
+ *     joinColumnFieldNames?: array<string, string>,
+ *     joinTable?: array,
+ *     joinTableColumns?: list<mixed>,
+ *     mappedBy: string|null,
+ *     orderBy?: array,
+ *     originalClass?: class-string,
+ *     originalField?: string,
+ *     orphanRemoval?: bool,
+ *     relationToSourceKeyColumns?: array,
+ *     relationToTargetKeyColumns?: array,
+ *     sourceEntity: class-string,
+ *     sourceToTargetKeyColumns?: array<string, string>,
+ *     targetEntity: class-string,
+ *     targetToSourceKeyColumns?: array<string, string>,
+ *     type: int,
+ *     unique?: bool,
+ * }
  */
 class ClassMetadataInfo implements ClassMetadata
 {
@@ -519,9 +564,9 @@ class ClassMetadataInfo implements ClassMetadata
      *
      * @see discriminatorColumn
      *
-     * @var array<string, string>
+     * @var array<int|string, string>
      *
-     * @psalm-var array<string, class-string>
+     * @psalm-var array<int|string, class-string>
      */
     public $discriminatorMap = [];
 
@@ -529,7 +574,7 @@ class ClassMetadataInfo implements ClassMetadata
      * READ-ONLY: The definition of the discriminator column used in JOINED and SINGLE_TABLE
      * inheritance mappings.
      *
-     * @psalm-var array<string, mixed>|null
+     * @psalm-var array{name: string, fieldName: string, type: string, length?: int, columnDefinition?: string|null}|null
      */
     public $discriminatorColumn;
 
@@ -621,7 +666,7 @@ class ClassMetadataInfo implements ClassMetadata
      * )
      * </pre>
      *
-     * @psalm-var array<string, array<string, mixed>>
+     * @psalm-var array<string, AssociationMapping>
      */
     public $associationMappings = [];
 
@@ -671,8 +716,8 @@ class ClassMetadataInfo implements ClassMetadata
      * )
      * </code>
      *
-     * @var array<string, mixed>
-     * @psalm-var array{sequenceName: string, allocationSize: string, initialValue: string, quoted?: mixed}
+     * @var array<string, mixed>|null
+     * @psalm-var array{sequenceName: string, allocationSize: string, initialValue: string, quoted?: mixed}|null
      * @todo Merge with tableGeneratorDefinition into generic generatorDefinition
      */
     public $sequenceGeneratorDefinition;
@@ -713,7 +758,7 @@ class ClassMetadataInfo implements ClassMetadata
     /**
      * READ-ONLY: The name of the field which is used for versioning in optimistic locking (if any).
      *
-     * @var mixed
+     * @var string|null
      */
     public $versionField;
 
@@ -1383,7 +1428,7 @@ class ClassMetadataInfo implements ClassMetadata
      *                          the object model.
      *
      * @return mixed[] The mapping.
-     * @psalm-return array<string, mixed>
+     * @psalm-return AssociationMapping
      *
      * @throws MappingException
      */
@@ -1399,7 +1444,7 @@ class ClassMetadataInfo implements ClassMetadata
     /**
      * Gets all association mappings of the class.
      *
-     * @psalm-return array<string, array<string, mixed>>
+     * @psalm-return array<string, AssociationMapping>
      */
     public function getAssociationMappings()
     {
@@ -1875,9 +1920,9 @@ class ClassMetadataInfo implements ClassMetadata
      *      originalClass: class-string,
      *      joinColumns?: array{0: array{name: string, referencedColumnName: string}}|mixed,
      *      id?: mixed,
-     *      sourceToTargetKeyColumns?: array,
-     *      joinColumnFieldNames?: array,
-     *      targetToSourceKeyColumns?: array<array-key>,
+     *      sourceToTargetKeyColumns?: array<string, string>,
+     *      joinColumnFieldNames?: array<string, string>,
+     *      targetToSourceKeyColumns?: array<string, string>,
      *      orphanRemoval: bool
      * }
      *
@@ -2278,9 +2323,7 @@ class ClassMetadataInfo implements ClassMetadata
         return $this->generatorType !== self::GENERATOR_TYPE_NONE;
     }
 
-    /**
-     * @return bool
-     */
+    /** @return bool */
     public function isInheritanceTypeNone()
     {
         return $this->inheritanceType === self::INHERITANCE_TYPE_NONE;
@@ -2333,6 +2376,8 @@ class ClassMetadataInfo implements ClassMetadata
      * Checks whether the class uses a sequence for id generation.
      *
      * @return bool TRUE if the class uses the SEQUENCE generator, FALSE otherwise.
+     *
+     * @psalm-assert-if-true !null $this->sequenceGeneratorDefinition
      */
     public function isIdGeneratorSequence()
     {
@@ -2762,7 +2807,7 @@ class ClassMetadataInfo implements ClassMetadata
      * Adds an association mapping without completing/validating it.
      * This is mainly used to add inherited association mappings to derived classes.
      *
-     * @psalm-param array<string, mixed> $mapping
+     * @psalm-param AssociationMapping $mapping
      *
      * @return void
      *
@@ -3170,7 +3215,7 @@ class ClassMetadataInfo implements ClassMetadata
      * @see getDiscriminatorColumn()
      *
      * @param mixed[]|null $columnDef
-     * @psalm-param array<string, mixed>|null $columnDef
+     * @psalm-param array{name: string|null, fieldName?: string, type?: string, length?: int, columnDefinition?: string|null}|null $columnDef
      *
      * @return void
      *
@@ -3203,9 +3248,7 @@ class ClassMetadataInfo implements ClassMetadata
         }
     }
 
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     final public function getDiscriminatorColumn(): array
     {
         if ($this->discriminatorColumn === null) {
@@ -3219,7 +3262,7 @@ class ClassMetadataInfo implements ClassMetadata
      * Sets the discriminator values used by this class.
      * Used for JOINED and SINGLE_TABLE inheritance mapping strategies.
      *
-     * @psalm-param array<string, class-string> $map
+     * @param array<int|string, string> $map
      *
      * @return void
      */
@@ -3233,9 +3276,8 @@ class ClassMetadataInfo implements ClassMetadata
     /**
      * Adds one entry of the discriminator map with a new class and corresponding name.
      *
-     * @param string $name
-     * @param string $className
-     * @psalm-param class-string $className
+     * @param int|string $name
+     * @param string     $className
      *
      * @return void
      *
@@ -3519,7 +3561,7 @@ class ClassMetadataInfo implements ClassMetadata
      * Sets the name of the field that is to be used for versioning if this class is
      * versioned for optimistic locking.
      *
-     * @param string $versionField
+     * @param string|null $versionField
      *
      * @return void
      */
@@ -3709,7 +3751,6 @@ class ClassMetadataInfo implements ClassMetadata
 
     /**
      * @param string|null $className
-     * @psalm-param string|class-string|null $className
      *
      * @return string|null null if the input value is null
      * @psalm-return class-string|null
@@ -3802,9 +3843,7 @@ class ClassMetadataInfo implements ClassMetadata
         }
     }
 
-    /**
-     * @throws MappingException
-     */
+    /** @throws MappingException */
     private function assertFieldNotMapped(string $fieldName): void
     {
         if (
@@ -3856,9 +3895,7 @@ class ClassMetadataInfo implements ClassMetadata
         return $sequencePrefix;
     }
 
-    /**
-     * @psalm-param array<string, mixed> $mapping
-     */
+    /** @psalm-param array<string, mixed> $mapping */
     private function assertMappingOrderBy(array $mapping): void
     {
         if (isset($mapping['orderBy']) && ! is_array($mapping['orderBy'])) {
@@ -3866,9 +3903,7 @@ class ClassMetadataInfo implements ClassMetadata
         }
     }
 
-    /**
-     * @psalm-param class-string $class
-     */
+    /** @psalm-param class-string $class */
     private function getAccessibleProperty(ReflectionService $reflService, string $class, string $field): ?ReflectionProperty
     {
         $reflectionProperty = $reflService->getAccessibleProperty($class, $field);
