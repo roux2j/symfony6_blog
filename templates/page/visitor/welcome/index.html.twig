@@ -23,11 +23,11 @@
                 <li></li> #}
         </ul>
     </div >
-    <section class="welcome-index-intro-section d-flex justify-content-center align-items-center mt-2">
+    <section class="mb-5">
         <div class="container">
             <div class="row">
-                <div class="col-md-7 intro-section-text text-center mt-5 ">
-                        <div class="waviy">
+                <div class="col-md-7 intro-section-text text-center p-5 ">
+                        <div class="waviy pt-5 pb-5">
                             <span style="--i:1">B</span>
                             <span style="--i:2">i</span>
                             <span style="--i:3">e</span>
@@ -59,10 +59,10 @@
                         <a href="{{ path('visitor.blog.index') }}" class="mt-4 btn btn-lg btn-primary quicksand"> Lire les articles </a>
                     
                 </div>
-                <div class="col-md-5 intro-section-image">
-                    <div class="text-center">
+                <div class="col-md-5 mt-4">
+                    
                         <img class="img-fluid" src="{{asset('image/static/590E1FF9-AE3B-4083-9201-AB67E4D6CEAC-1.png')}}" alt="">
-                    </div>
+            
                 </div>
             </div>
         </div>
@@ -100,7 +100,7 @@
 
                 <div class="row">
                     {% for post in posts %}
-                    <div class="col-md-6 mx-auto bg-light">
+                    <div class="col-md-6 mx-auto bg-light mb-5">
                         <a href="{{path('visitor.blog.post.show', {'id':post.id,'slug': post.slug}) }}" class="no-decoration text-black">
                             <div class="border-gradient border-gradient-purple hovercard">
                                 <article class="shadow border">
